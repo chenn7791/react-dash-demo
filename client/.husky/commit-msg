@@ -1,0 +1,8 @@
+commit_msg_file="$1"
+
+case "$commit_msg_file" in
+  /*) commit_msg_path="$commit_msg_file" ;;
+  *) commit_msg_path="../$commit_msg_file" ;;
+esac
+
+cd client && yarn commitlint --edit "$commit_msg_path"
