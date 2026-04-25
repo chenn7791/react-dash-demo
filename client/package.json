@@ -20,9 +20,13 @@
     "commitlint": "commitlint"
   },
   "dependencies": {
+    "@emotion/react": "11.13.3",
+    "@emotion/styled": "11.13.0",
+    "@mui/material": "5.16.14",
     "@reduxjs/toolkit": "2.5.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-is": "18.3.1",
     "react-redux": "9.2.0"
   },
   "devDependencies": {
@@ -31,6 +35,7 @@
     "@eslint/js": "9.18.0",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
+    "@types/react-is": "18.3.1",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.18.0",
     "eslint-config-prettier": "9.1.0",
