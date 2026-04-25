@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { Provider } from 'react-redux';
 import App from './App';
+import './i18n';
 import { store } from './store';
 import './styles.css';
 
