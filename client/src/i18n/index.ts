@@ -1,3 +1,9 @@
+/*
+ * @Author: Chenn
+ * @Date: 2026-04-25 11:51:56
+ * @LastEditors: Chenn
+ * @LastEditTime: 2026-04-25 17:42:36
+ */
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -14,10 +20,18 @@ const resources = {
         zh: '中文',
         en: 'English',
       },
-      counter: {
-        decrement: '-1',
-        increment: '+1',
-        incrementByAmount: '+5',
+      board: {
+        title: '看板',
+        todoList: '待办列表',
+        doingList: '进行中列表',
+        doneList: '已完成列表',
+        add: '添加',
+        addPlaceholder: '输入卡片内容',
+        confirmAdd: '确认',
+        cancelAdd: '取消',
+        empty: '暂无内容',
+        drag: '拖拽卡片',
+        advance: '推进到下一列',
       },
     },
   },
@@ -33,10 +47,18 @@ const resources = {
         zh: '中文',
         en: 'English',
       },
-      counter: {
-        decrement: '-1',
-        increment: '+1',
-        incrementByAmount: '+5',
+      board: {
+        title: 'Board',
+        todoList: 'Todo',
+        doingList: 'Doing',
+        doneList: 'Done',
+        add: 'Add',
+        addPlaceholder: 'Enter card content',
+        confirmAdd: 'Confirm',
+        cancelAdd: 'Cancel',
+        empty: 'No cards yet',
+        drag: 'Drag card',
+        advance: 'Move to next column',
       },
     },
   },

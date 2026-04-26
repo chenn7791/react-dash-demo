@@ -1,3 +1,9 @@
+/*
+ * @Author: Chenn
+ * @Date: 2026-04-25 09:35:39
+ * @LastEditors: Chenn
+ * @LastEditTime: 2026-04-25 11:24:54
+ */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CounterState {

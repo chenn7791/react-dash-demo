@@ -2,81 +2,85 @@
  * @Author: Chenn
  * @Date: 2026-04-25 09:35:39
  * @LastEditors: Chenn
- * @LastEditTime: 2026-04-25 10:49:03
+ * @LastEditTime: 2026-04-25 17:40:59
  */
 import {
-  Box,
-  Button,
-  Chip,
+  AppBar,
   Container,
+  Grid,
   Paper,
-  Stack,
   ToggleButton,
   ToggleButtonGroup,
+  Toolbar,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { isElement } from 'react-is';
-import { decrement, increment, incrementByAmount } from './features/counter/counterSlice';
-import { useAppDispatch, useAppSelector } from './hooks';
+import Cards from './Cards';
+import { useAppSelector } from './hooks';
 
 function App() {
   const { i18n, t } = useTranslation();
-  const count = useAppSelector((state) => state.counter.value);
-  const dispatch = useAppDispatch();
-  const frameworkBadge = <Chip label={t('app.badge')} color="primary" />;
-
+  const card = useAppSelector((state) => state.card);
   return (
     <Container component="main" maxWidth="lg" className="app">
-      <Paper elevation={3} sx={{ width: '100%', p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
-        <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-          <ToggleButtonGroup
-            exclusive
-            size="small"
-            value={i18n.resolvedLanguage}
-            aria-label={t('app.language')}
-            onChange={(_, language: string | null) => {
-              if (language) {
-                void i18n.changeLanguage(language);
-              }
-            }}
-          >
-            <ToggleButton value="zh-CN">{t('language.zh')}</ToggleButton>
-            <ToggleButton value="en">{t('language.en')}</ToggleButton>
-          </ToggleButtonGroup>
-        </Stack>
-        <Chip
-          label={t('app.badge')}
-          color="primary"
-          variant={isElement(frameworkBadge) ? 'outlined' : 'filled'}
-        />
-        <Typography component="h1" variant="h4" sx={{ mt: 2, fontWeight: 700 }}>
-          {t('app.title')}
-        </Typography>
-        <Box
-          component="output"
-          aria-label={t('app.countLabel')}
-          sx={{
-            display: 'block',
-            my: 4,
-            fontSize: 72,
-            fontWeight: 700,
-            lineHeight: 1,
-          }}
-        >
-          {count}
-        </Box>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center">
-          <Button variant="outlined" onClick={() => dispatch(decrement())}>
-            {t('counter.decrement')}
-          </Button>
-          <Button variant="contained" onClick={() => dispatch(increment())}>
-            {t('counter.increment')}
-          </Button>
-          <Button variant="outlined" onClick={() => dispatch(incrementByAmount(5))}>
-            {t('counter.incrementByAmount')}
-          </Button>
-        </Stack>
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          p: { xs: 2, sm: 3 },
+          border: 1,
+          borderColor: 'divider',
+          borderRadius: 2,
+          backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          textAlign: 'center',
+        }}
+      >
+        <AppBar position="static" elevation={0} sx={{ borderRadius: 1.5 }}>
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'left' }}>
+              {t('board.title')}
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={i18n.resolvedLanguage}
+              aria-label={t('app.language')}
+              sx={{
+                ml: 'auto',
+                '& .MuiToggleButton-root': {
+                  color: '#ffffff',
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                },
+                '& .MuiToggleButton-root.Mui-selected': {
+                  color: '#ffffff',
+                  backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                },
+                '& .MuiToggleButton-root.Mui-selected:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.24)',
+                },
+              }}
+              onChange={(_, language: string | null) => {
+                if (language) {
+                  void i18n.changeLanguage(language);
+                }
+              }}
+            >
+              <ToggleButton value="zh-CN">{t('language.zh')}</ToggleButton>
+              <ToggleButton value="en">{t('language.en')}</ToggleButton>
+            </ToggleButtonGroup>
+          </Toolbar>
+        </AppBar>
+        <Grid container spacing={3} sx={{ mt: 0.5 }}>
+          <Grid item xs={12} md={4}>
+            <Cards type="todo" cards={card.todo} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Cards type="doing" cards={card.doing} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Cards type="done" cards={card.done} />
+          </Grid>
+        </Grid>
       </Paper>
     </Container>
   );
