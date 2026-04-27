@@ -18,6 +18,50 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
+router.put('/reorder', async (req, res, next) => {
+  try {
+    const { cards } = req.body;
+
+    if (!Array.isArray(cards)) {
+      res.status(400).json({ error: 'Cards must be an array' });
+      return;
+    }
+
+    for (const card of cards) {
+      if (!card || typeof card.id !== 'string' || !isValidCardType(card.type)) {
+        res.status(400).json({ error: 'Invalid card payload' });
+        return;
+      }
+
+      if (!Number.isInteger(card.position) || card.position < 0) {
+        res.status(400).json({ error: 'Position must be a non-negative integer' });
+        return;
+      }
+    }
+
+    await run('BEGIN TRANSACTION');
+
+    try {
+      for (const card of cards) {
+        await run(
+          'UPDATE cards SET type = ?, position = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [card.type, card.position, card.id],
+        );
+      }
+
+      await run('COMMIT');
+    } catch (error) {
+      await run('ROLLBACK');
+      throw error;
+    }
+
+    const rows = await all('SELECT * FROM cards ORDER BY type, position, created_at');
+    res.json({ data: rows });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const { message, type = 'todo' } = req.body;
@@ -110,7 +154,8 @@ router.patch('/:id', async (req, res, next) => {
       return;
     }
 
-    res.json({ data: { id: req.params.id } });
+    const [row] = await all('SELECT * FROM cards WHERE id = ?', [req.params.id]);
+    res.json({ data: row });
   } catch (error) {
     next(error);
   }

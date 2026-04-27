@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CardItem from './CardItem';
-import { addCard, moveCard } from './features/card/cardSlice';
+import { addCardAsync, moveCardAsync } from './features/card/cardSlice';
 import { CardType, ICard } from './features/card/interface';
 import { useAppDispatch } from './hooks';
 
@@ -40,14 +40,7 @@ function Cards({ type, cards }: CardsProps) {
       return;
     }
 
-    const id = crypto.randomUUID();
-    const card: ICard = {
-      id,
-      key: id,
-      message,
-    };
-
-    dispatch(addCard({ cardType: type, card }));
+    void dispatch(addCardAsync({ cardType: type, message }));
     setDraft('');
     setIsAdding(false);
   };
@@ -63,8 +56,8 @@ function Cards({ type, cards }: CardsProps) {
       return;
     }
 
-    dispatch(
-      moveCard({
+    void dispatch(
+      moveCardAsync({
         from: currentType,
         to: nextType,
         cardId: card.id,
@@ -95,8 +88,8 @@ function Cards({ type, cards }: CardsProps) {
     }
 
     const payload = JSON.parse(data) as { cardId: string; from: CardType };
-    dispatch(
-      moveCard({
+    void dispatch(
+      moveCardAsync({
         from: payload.from,
         to: type,
         cardId: payload.cardId,
@@ -116,8 +109,8 @@ function Cards({ type, cards }: CardsProps) {
     }
 
     const payload = JSON.parse(data) as { cardId: string; from: CardType };
-    dispatch(
-      moveCard({
+    void dispatch(
+      moveCardAsync({
         from: payload.from,
         to: type,
         cardId: payload.cardId,

@@ -1,7 +1,9 @@
-import { DragEvent } from 'react';
-import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { DragEvent, useState } from 'react';
+import { Box, Button, IconButton, ListItem, ListItemText, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { deleteCardAsync, updateCardAsync } from './features/card/cardSlice';
 import { CardType, ICard } from './features/card/interface';
+import { useAppDispatch } from './hooks';
 
 interface CardItemProps {
   card: ICard;
@@ -18,12 +20,26 @@ const nextTypeMap: Partial<Record<CardType, CardType>> = {
 
 function CardItem({ card, type, onAdvance, onDrop, onDragStart }: CardItemProps) {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const [draft, setDraft] = useState(card.message);
+  const [isEditing, setIsEditing] = useState(false);
   const nextType = nextTypeMap[type];
+
+  const handleUpdate = () => {
+    const message = draft.trim();
+
+    if (!message) {
+      return;
+    }
+
+    void dispatch(updateCardAsync({ cardId: card.id, message }));
+    setIsEditing(false);
+  };
 
   return (
     <ListItem
       divider
-      draggable
+      draggable={!isEditing}
       sx={{
         mb: 1,
         border: 1,
@@ -47,27 +63,71 @@ function CardItem({ card, type, onAdvance, onDrop, onDragStart }: CardItemProps)
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => onDrop(event, card)}
     >
-      <ListItemText primary={card.message} sx={{ minWidth: 0 }} />
-      {nextType ? (
-        <IconButton
-          aria-label={t('board.advance')}
-          title={t('board.advance')}
-          sx={{
-            ml: 1,
-            flexShrink: 0,
-            width: 34,
-            height: 34,
-            backgroundColor: 'action.hover',
-            '&:hover': {
-              backgroundColor: 'primary.main',
-              color: 'primary.contrastText',
-            },
-          }}
-          onClick={() => onAdvance(card, type)}
-        >
-          {'>'}
-        </IconButton>
-      ) : null}
+      {isEditing ? (
+        <Box sx={{ width: '100%' }}>
+          <TextField
+            autoFocus
+            fullWidth
+            size="small"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                handleUpdate();
+              }
+            }}
+          />
+          <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ mt: 1 }}>
+            <Button
+              size="small"
+              onClick={() => {
+                setDraft(card.message);
+                setIsEditing(false);
+              }}
+            >
+              {t('board.cancelAdd')}
+            </Button>
+            <Button size="small" variant="contained" onClick={handleUpdate}>
+              {t('board.confirmAdd')}
+            </Button>
+          </Stack>
+        </Box>
+      ) : (
+        <>
+          <ListItemText primary={card.message} sx={{ minWidth: 0 }} />
+          <Stack direction="row" spacing={0.5} sx={{ ml: 1, flexShrink: 0 }}>
+            <Button size="small" onClick={() => setIsEditing(true)}>
+              {t('board.edit')}
+            </Button>
+            <Button
+              color="error"
+              size="small"
+              onClick={() => void dispatch(deleteCardAsync(card.id))}
+            >
+              {t('board.delete')}
+            </Button>
+            {nextType ? (
+              <IconButton
+                aria-label={t('board.advance')}
+                title={t('board.advance')}
+                sx={{
+                  flexShrink: 0,
+                  width: 34,
+                  height: 34,
+                  backgroundColor: 'action.hover',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                    color: 'primary.contrastText',
+                  },
+                }}
+                onClick={() => onAdvance(card, type)}
+              >
+                {'>'}
+              </IconButton>
+            ) : null}
+          </Stack>
+        </>
+      )}
     </ListItem>
   );
 }

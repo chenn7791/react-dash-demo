@@ -4,6 +4,7 @@
  * @LastEditors: Chenn
  * @LastEditTime: 2026-04-25 17:40:59
  */
+import { useEffect } from 'react';
 import {
   AppBar,
   Container,
@@ -16,11 +17,18 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Cards from './Cards';
-import { useAppSelector } from './hooks';
+import { fetchCardsAsync } from './features/card/cardSlice';
+import { useAppDispatch, useAppSelector } from './hooks';
 
 function App() {
   const { i18n, t } = useTranslation();
+  const dispatch = useAppDispatch();
   const card = useAppSelector((state) => state.card);
+
+  useEffect(() => {
+    void dispatch(fetchCardsAsync());
+  }, [dispatch]);
+
   return (
     <Container component="main" maxWidth="lg" className="app">
       <Paper
